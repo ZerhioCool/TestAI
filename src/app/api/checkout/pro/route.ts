@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+      return NextResponse.redirect(new URL("/login?redirect=/planes", req.url), 303);
     }
 
     // In a real scenario, you'd create the Product and Price in Stripe dashboard 

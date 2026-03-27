@@ -1,9 +1,14 @@
 import Link from "next/link";
 import { CheckCircle2, Crown, Zap } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card";
+import { createClient } from "@/utils/supabase/server";
+import { cn } from "@/lib/utils";
 
-export default function PlanesPage() {
+export default async function PlanesPage() {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <div className="container mx-auto py-16 px-4 max-w-6xl min-h-[85vh] flex flex-col justify-center">
       <div className="text-center space-y-4 mb-16">
@@ -35,15 +40,17 @@ export default function PlanesPage() {
             </ul>
           </CardContent>
           <CardFooter>
-            <Link href="/register" className="w-full">
-              <Button variant="outline" className="w-full text-base h-12">Registrarse Gratis</Button>
+            <Link href={user ? "/dashboard" : "/register"} className="w-full">
+              <Button variant="outline" className="w-full text-base h-12 rounded-xl">
+                {user ? "Ir al Dashboard" : "Registrarse Gratis"}
+              </Button>
             </Link>
           </CardFooter>
         </Card>
 
         {/* Pro */}
-        <Card className="flex flex-col border-primary shadow-xl scale-105 relative bg-gradient-to-br from-primary/5 to-primary/10">
-          <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">
+        <Card className="flex flex-col border-primary shadow-xl scale-105 relative bg-gradient-to-br from-primary/5 to-primary/10 rounded-3xl overflow-hidden">
+          <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-black px-3 py-1 rounded-bl-lg">
             MÁS POPULAR
           </div>
           <CardHeader>
@@ -63,11 +70,19 @@ export default function PlanesPage() {
             </ul>
           </CardContent>
           <CardFooter>
-            <form action="/api/checkout/pro" method="POST" className="w-full">
-               <Button type="submit" className="w-full text-base h-12 bg-primary hover:bg-primary/90 text-primary-foreground font-bold shadow-md">
-                 Suscribirse a Pro
-               </Button>
-            </form>
+            {user ? (
+              <form action="/api/checkout/pro" method="POST" className="w-full">
+                <Button type="submit" className="w-full text-lg h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-black shadow-lg shadow-primary/20 rounded-2xl transition-transform active:scale-95">
+                  Suscribirse a Pro
+                </Button>
+              </form>
+            ) : (
+              <Link href="/login?redirect=/planes" className="w-full">
+                <Button className="w-full text-lg h-14 bg-primary hover:bg-primary/90 text-primary-foreground font-black shadow-lg shadow-primary/20 rounded-2xl transition-transform active:scale-95">
+                  Iniciar Sesión para Suscribirse
+                </Button>
+              </Link>
+            )}
           </CardFooter>
         </Card>
 

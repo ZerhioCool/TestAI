@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     const { data: { user } } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+      return NextResponse.redirect(new URL("/login?redirect=/dashboard", req.url), 303);
     }
 
     const formData = await req.formData();
