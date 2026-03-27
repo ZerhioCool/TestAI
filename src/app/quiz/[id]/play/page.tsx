@@ -3,6 +3,7 @@
 import { useEffect, useState, use } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, CheckCircle2, XCircle, Trophy } from "lucide-react";
 
@@ -29,6 +30,7 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [isChecking, setIsChecking] = useState(false);
   const [isFinished, setIsFinished] = useState(false);
+  const [timeLeft, setTimeLeft] = useState<number | null>(null);
 
   useEffect(() => {
     async function loadQuiz() {
@@ -38,6 +40,7 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
         const data = await res.json();
         setQuiz(data.quiz);
         setQuestions(data.questions);
+        setTimeLeft(data.quiz.timeLimitSec || 30);
       } catch (err) {
         console.error(err);
       } finally {
@@ -46,6 +49,24 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
     }
     loadQuiz();
   }, [resolvedParams.id]);
+
+  // Timer logic
+  useEffect(() => {
+    if (isFinished || isChecking || timeLeft === null || timeLeft <= 0) return;
+
+    const timer = setInterval(() => {
+      setTimeLeft((prev) => (prev !== null ? prev - 1 : null));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [timeLeft, isFinished, isChecking]);
+
+  // Handle timeout
+  useEffect(() => {
+    if (timeLeft === 0 && !isChecking && !isFinished) {
+      handleSelectOption(""); // Send empty to trigger "incorrect"
+    }
+  }, [timeLeft, isChecking, isFinished]);
 
   const handleSelectOption = (optionId: string) => {
     if (isChecking) return;
@@ -65,6 +86,7 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
         setCurrentIndex(prev => prev + 1);
         setSelectedOption(null);
         setIsChecking(false);
+        setTimeLeft(quiz?.timeLimitSec || 30);
       } else {
         setIsFinished(true);
       }
@@ -124,11 +146,21 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
     <div className="container mx-auto py-8 px-4 max-w-3xl min-h-[80vh] flex flex-col justify-center">
       
       <div className="flex justify-between items-center mb-8">
-        <div className="text-muted-foreground font-semibold">
-          Pregunta {currentIndex + 1} de {questions.length}
+        <div className="flex flex-col">
+          <div className="text-muted-foreground font-semibold text-sm uppercase tracking-wider">
+            Pregunta {currentIndex + 1} de {questions.length}
+          </div>
+          {timeLeft !== null && (
+            <div className={cn(
+              "text-2xl font-black mt-1",
+              timeLeft <= 5 ? "text-destructive animate-pulse" : "text-primary"
+            )}>
+              {timeLeft}s
+            </div>
+          )}
         </div>
-        <div className="bg-primary/10 text-primary px-4 py-1.5 rounded-full font-bold">
-          Puntos: {score}
+        <div className="bg-primary/10 text-primary px-6 py-2 rounded-2xl font-black shadow-sm border border-primary/20">
+          {score} pts
         </div>
       </div>
 
