@@ -51,6 +51,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "No se pudo crear la sesión" }, { status: 500 });
   } catch (error: any) {
     console.error("Stripe Error:", error);
-    return NextResponse.redirect(new URL("/dashboard?error=StripeError", req.url), 303);
+    const errorMessage = encodeURIComponent(error.message || "Error desconocido");
+    return NextResponse.redirect(new URL(`/dashboard?error=StripeError&message=${errorMessage}`, req.url), 303);
   }
 }

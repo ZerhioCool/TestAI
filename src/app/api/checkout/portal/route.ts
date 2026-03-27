@@ -43,6 +43,7 @@ export async function POST(req: NextRequest) {
 
   } catch (error: any) {
     console.error("Stripe Portal Error:", error);
-    return NextResponse.redirect(new URL("/dashboard?error=StripePortalError", req.url), 303);
+    const errorMessage = encodeURIComponent(error.message || "Error desconocido");
+    return NextResponse.redirect(new URL(`/dashboard?error=StripePortalError&message=${errorMessage}`, req.url), 303);
   }
 }

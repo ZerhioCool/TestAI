@@ -136,7 +136,14 @@ export default async function DashboardPage(props: { searchParams: Promise<{ [ke
       {error === 'StripePortalError' && (
         <div className="mb-8 p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive flex items-center gap-3">
           <AlertCircle className="h-5 w-5" />
-          <p className="text-sm font-medium">Ocurrió un error al intentar comunicar con Stripe. Por favor inténtalo más tarde.</p>
+          <p className="text-sm font-medium">Ocurrió un error al intentar comunicar con Stripe. Por favor inténtalo más tarde. Error: {searchParams.message || 'Error desconocido'}</p>
+        </div>
+      )}
+
+      {error === 'StripeError' && (
+        <div className="mb-8 p-4 bg-destructive/10 border border-destructive/20 rounded-xl text-destructive flex items-center gap-3 animate-in fade-in slide-in-from-top-2">
+          <AlertCircle className="h-5 w-5" />
+          <p className="text-sm font-medium">Error en el proceso de pago: {searchParams.message || 'No se pudo iniciar la sesión de Stripe. Verifica las claves API en Vercel.'}</p>
         </div>
       )}
 
