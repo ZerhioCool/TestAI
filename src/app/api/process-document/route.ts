@@ -101,6 +101,7 @@ export async function POST(req: NextRequest) {
 
     const formData = await req.formData();
     const files = formData.getAll("file") as File[];
+    const language = formData.get("language") as string || "es";
 
     if (!files || files.length === 0) {
       return NextResponse.json({ error: "No se proporcionaron archivos" }, { status: 400 });
@@ -112,7 +113,8 @@ export async function POST(req: NextRequest) {
     }
 
     const maxQuestions = isFreeUser ? 5 : 15;
-    const dynamicPrompt = `${PEDAGOGICAL_PROMPT}\n\nREQUERIMIENTO ADICIONAL: Genera hasta ${maxQuestions} preguntas si el contenido lo permite, mezclando selección múltiple y verdadero/falso.`;
+    const targetLang = language === 'en' ? 'English' : 'Spanish';
+    const dynamicPrompt = `${PEDAGOGICAL_PROMPT}\n\nREQUERIMIENTO ADICIONAL: Genera hasta ${maxQuestions} preguntas si el contenido lo permite, mezclando selección múltiple y verdadero/falso. TODO EL CONTENIDO (título, preguntas, opciones, explicaciones) debe estar obligatoriamente en idioma: ${targetLang}.`;
 
     const geminiParts: any[] = [dynamicPrompt];
     let sourceFileName = "Cuestionario.pdf";
@@ -171,6 +173,7 @@ export async function POST(req: NextRequest) {
     const [newQuiz] = await db.insert(quizzesTable).values({
       userId: dbUserId,
       title: quizData.title?.substring(0, 255) || "Cuestionario de TestAI",
+      sourceLang: language,
       questionCount: quizData.questions?.length || 5,
       shareToken: shareTokenStr,
       pinCode: pinString,

@@ -6,10 +6,13 @@ import { useRouter } from "next/navigation";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { createClient } from "@/utils/supabase/client";
-import { signOut } from "@/app/login/actions";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Languages } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function Header() {
+  const { language, setLanguage, t } = useLanguage();
+  const navTranslations = t('nav');
+  
   const router = useRouter();
   const [user, setUser] = useState<any>(null);
   const [mounted, setMounted] = useState(false);
@@ -32,10 +35,14 @@ export function Header() {
   }, [supabase.auth]);
 
   const navLinks = [
-    { href: "/#features", label: "Características" },
-    { href: "/library", label: "Explorar Biblioteca" },
-    { href: "/planes", label: "Planes" },
+    { href: "/#features", label: language === 'es' ? "Características" : "Features" },
+    { href: "/library", label: navTranslations.library },
+    { href: "/planes", label: navTranslations.pricing },
   ];
+
+  const toggleLanguage = () => {
+    setLanguage(language === 'es' ? 'en' : 'es');
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
@@ -57,12 +64,23 @@ export function Header() {
           ))}
           {mounted && user && (
             <Link href="/dashboard" className="transition-colors hover:text-primary">
-              Mi Dashboard
+              {navTranslations.dashboard}
             </Link>
           )}
         </nav>
 
         <div className="flex items-center gap-2 md:gap-4">
+          {/* Language Switcher */}
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            onClick={toggleLanguage}
+            className="rounded-full gap-2 font-bold hover:bg-primary/10 transition-colors"
+          >
+            <Languages className="h-4 w-4" />
+            <span className="uppercase">{language}</span>
+          </Button>
+
           <div className="hidden md:flex items-center gap-4">
             {mounted && user ? (
               <>
@@ -77,12 +95,12 @@ export function Header() {
                     window.location.href = "/login";
                   }}
                 >
-                  Cerrar Sesión
+                  {navTranslations.logout}
                 </Button>
               </>
             ) : mounted ? (
-              <Link href="/login" className={cn(buttonVariants({ variant: "ghost" }), "rounded-full")}>
-                Iniciar Sesión
+              <Link href="/login" className={cn(buttonVariants({ variant: "ghost" }), "rounded-full font-bold")}>
+                {navTranslations.login}
               </Link>
             ) : (
               <div className="w-20 h-8 opacity-0" />
@@ -93,10 +111,10 @@ export function Header() {
             href="/upload" 
             className={cn(
               buttonVariants({ variant: "default" }),
-              "rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95"
+              "rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95 font-bold"
             )}
           >
-            Crear Quiz
+            {language === 'es' ? "Crear Quiz" : "Create Quiz"}
           </Link>
 
           {/* Mobile Menu Toggle */}
@@ -132,7 +150,7 @@ export function Header() {
                   className="py-2 transition-colors hover:text-primary"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  Mi Dashboard
+                  {navTranslations.dashboard}
                 </Link>
                 <div className="border-t pt-4 flex flex-col gap-4">
                   <div className="text-muted-foreground px-1">{user.email}</div>
@@ -144,7 +162,7 @@ export function Header() {
                       window.location.href = "/login";
                     }}
                   >
-                    Cerrar Sesión
+                    {navTranslations.logout}
                   </Button>
                 </div>
               </>
@@ -154,7 +172,7 @@ export function Header() {
                 className="py-4 text-primary font-bold border-t mt-2"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Iniciar Sesión
+                {navTranslations.login}
               </Link>
             ) : null}
           </nav>

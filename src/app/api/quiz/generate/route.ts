@@ -36,24 +36,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    const { topic, existingQuestionsCount, suggestedCount = 3, type = "suggestion" } = await req.json();
+    const { topic, existingQuestionsCount, suggestedCount = 3, type = "suggestion", language = "es" } = await req.json();
 
     if (!topic && type === "bulk") {
       return NextResponse.json({ error: "El tema es obligatorio para generación masiva" }, { status: 400 });
     }
 
+    const targetLang = language === 'en' ? 'English' : 'Spanish';
     let prompt = "";
     if (type === "bulk") {
       prompt = `Genera un quiz completo con 5-10 preguntas sobre el tema: "${topic}". 
+      TODO EL CONTENIDO debe estar en idioma: ${targetLang}.
       Devuelve un objeto JSON con: { "title": "Título del Quiz", "questions": [...] }`;
     } else {
       prompt = `Sugiere exactamente ${suggestedCount} nuevas preguntas para un quiz sobre el tema: "${topic || 'General'}". 
+      TODO EL CONTENIDO debe estar en idioma: ${targetLang}.
       Actualmente el quiz tiene ${existingQuestionsCount || 0} preguntas. No repitas conceptos si es posible.
       Devuelve un array JSON directo de objetos de pregunta.`;
     }
 
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-2.0-flash", // Using a stable version, original had 2.5 flash which might be 1.5/2.0
+      model: "gemini-2.0-flash",
       generationConfig: {
         responseMimeType: "application/json",
       }

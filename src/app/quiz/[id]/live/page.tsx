@@ -11,12 +11,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, Users, Trophy, Volume2 } from "lucide-react";
 import { RealtimeChannel } from "@supabase/supabase-js";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function PlayerLivePage({ params }: { params: Promise<{ id: string }> }) {
+  const { language, t } = useLanguage();
+  const plT = t('player');
+  const commonT = t('common');
+
   const resolvedParams = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const guestName = searchParams.get("guest") || "Jugador";
+  const guestName = searchParams.get("guest") || (language === 'es' ? "Jugador" : "Player");
   const supabase = createClient();
   const { isPlaying, toggleMusic, playOneShot } = useAudio();
   const channelRef = useRef<RealtimeChannel | null>(null);
@@ -134,8 +139,8 @@ export default function PlayerLivePage({ params }: { params: Promise<{ id: strin
           <div className="bg-white/20 p-8 rounded-full inline-block mb-4 shadow-xl">
             <Users className="w-16 h-16" />
           </div>
-          <h1 className="text-4xl font-black">¡Estás dentro, {guestName}!</h1>
-          <p className="text-xl opacity-90">Espera a que el administrador inicie la partida...</p>
+          <h1 className="text-4xl font-black">{plT.inGame}, {guestName}!</h1>
+          <p className="text-xl opacity-90">{plT.waitingForHostAction}</p>
           <div className="flex gap-2 justify-center">
             {[1, 2, 3].map(i => (
               <div key={i} className="w-3 h-3 bg-white rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }} />
@@ -154,10 +159,10 @@ export default function PlayerLivePage({ params }: { params: Promise<{ id: strin
         </div>
          <Card className="max-w-md w-full text-center p-8 border-t-4 border-t-primary shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in duration-500">
            <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-4" />
-           <h2 className="text-3xl font-bold mb-2">¡Juego Terminado!</h2>
+           <h2 className="text-3xl font-bold mb-2">{plT.gameOver}</h2>
            <p className="text-3xl font-black text-primary mb-2 mt-4">{score} pts</p>
-           <p className="text-muted-foreground mb-8">Revisa la pantalla principal para ver el podio.</p>
-           <Button onClick={() => router.push('/')} className="w-full h-14 text-lg font-black rounded-2xl shadow-lg shadow-primary/20">Volver al Inicio</Button>
+           <p className="text-muted-foreground mb-8">{plT.gamePodiumNotice}</p>
+           <Button onClick={() => router.push('/')} className="w-full h-14 text-lg font-black rounded-2xl shadow-lg shadow-primary/20">{plT.backToDashboard}</Button>
          </Card>
        </div>
      );
@@ -171,7 +176,7 @@ export default function PlayerLivePage({ params }: { params: Promise<{ id: strin
 
        <div className="max-w-2xl w-full mt-10 space-y-8 animate-in slide-in-from-bottom-5 duration-500">
           <div className="flex justify-between items-center bg-muted/30 p-4 rounded-2xl border shadow-sm">
-            <p className="text-sm font-bold text-primary uppercase tracking-widest pl-2">Pregunta {currentIndex + 1} de {questions.length}</p>
+            <p className="text-sm font-bold text-primary uppercase tracking-widest pl-2">{plT.questionLabel} {currentIndex + 1} de {questions.length}</p>
             <div className="flex items-center gap-4">
               {timeLeft !== null && (
                 <div className={`text-2xl font-black px-4 py-1 rounded-xl transition-all ${timeLeft <= 3 ? 'bg-destructive/10 text-destructive animate-pulse' : 'bg-primary/5 text-primary'}`}>
@@ -204,7 +209,7 @@ export default function PlayerLivePage({ params }: { params: Promise<{ id: strin
 
           {hasAnswered && (
              <p className="text-center font-bold text-muted-foreground animate-pulse text-lg py-4">
-               ¡Respuesta enviada! Esperando al moderador...
+               {plT.answerSubmitted}
              </p>
           )}
        </div>

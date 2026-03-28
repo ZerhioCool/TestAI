@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Loader2, CheckCircle2, XCircle, Trophy } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 type Question = {
   id: string;
@@ -16,10 +17,14 @@ type Question = {
 };
 
 export default function PlayQuizPage({ params }: { params: Promise<{ id: string }> }) {
+  const { language, t } = useLanguage();
+  const plT = t('player');
+  const commonT = t('common');
+  
   const resolvedParams = use(params);
   const router = useRouter();
   const searchParams = useSearchParams();
-  const guestName = searchParams.get("guest") || "Jugador";
+  const guestName = searchParams.get("guest") || (language === 'es' ? "Jugador" : "Player");
 
   const [loading, setLoading] = useState(true);
   const [quiz, setQuiz] = useState<any>(null);
@@ -50,7 +55,6 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
     loadQuiz();
   }, [resolvedParams.id]);
 
-  // Timer logic
   useEffect(() => {
     if (isFinished || isChecking || timeLeft === null || timeLeft <= 0) return;
 
@@ -61,10 +65,9 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
     return () => clearInterval(timer);
   }, [timeLeft, isFinished, isChecking]);
 
-  // Handle timeout
   useEffect(() => {
     if (timeLeft === 0 && !isChecking && !isFinished) {
-      handleSelectOption(""); // Send empty to trigger "incorrect"
+      handleSelectOption("");
     }
   }, [timeLeft, isChecking, isFinished]);
 
@@ -96,33 +99,33 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
   if (loading) {
     return (
       <div className="flex h-[80vh] items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        <Loader2 className="h-12 w-12 animate-spin text-primary" />
       </div>
     );
   }
 
   if (!quiz || questions.length === 0) {
-    return <div className="text-center p-12">No se encontró el quiz.</div>;
+    return <div className="text-center p-12 font-bold text-xl">{plT.notFound}</div>;
   }
 
   if (isFinished) {
     return (
       <div className="container mx-auto py-12 px-4 max-w-2xl">
-        <Card className="text-center py-10 border-2 border-primary/20 shadow-xl bg-gradient-to-b from-background to-primary/5">
+        <Card className="text-center py-10 border-4 border-primary/20 shadow-2xl bg-gradient-to-b from-background to-primary/5 rounded-[3rem] overflow-hidden">
           <CardHeader>
-            <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-4" />
-            <CardTitle className="text-4xl font-black">¡Completado!</CardTitle>
+            <Trophy className="w-24 h-24 text-yellow-500 mx-auto mb-6 drop-shadow-lg animate-bounce" />
+            <CardTitle className="text-5xl font-black">{plT.completed}</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <p className="text-xl text-muted-foreground">Bien hecho, <span className="font-bold text-primary">{guestName}</span></p>
-            <div className="text-6xl font-black text-primary">
-              {score} <span className="text-2xl text-muted-foreground">pts</span>
+          <CardContent className="space-y-8">
+            <p className="text-2xl text-muted-foreground font-medium">{plT.wellDone}, <span className="font-black text-primary">{guestName}</span></p>
+            <div className="text-7xl font-black text-primary drop-shadow-sm">
+              {score} <span className="text-2xl text-muted-foreground uppercase tracking-widest italic">pts</span>
             </div>
-            <p className="text-lg">
-              Acertaste {score / 100} de {questions.length} preguntas.
+            <p className="text-xl font-bold">
+              {plT.statsCorrect} {score / 100} {plT.statsTotal} {questions.length} {plT.statsQuestions}.
             </p>
-            <Button onClick={() => router.push("/dashboard")} className="mt-8" size="lg">
-              Volver al Inicio
+            <Button onClick={() => router.push("/dashboard")} className="mt-8 h-16 px-12 text-xl font-black rounded-2xl shadow-xl shadow-primary/20 transition-transform active:scale-95" size="lg">
+              {plT.backToDashboard}
             </Button>
           </CardContent>
         </Card>
@@ -135,61 +138,63 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
   if (!currentQ) {
     return (
       <div className="container mx-auto py-12 px-4 text-center">
-        <h2 className="text-2xl font-bold text-destructive">Error en la pregunta</h2>
-        <p className="mt-4 text-muted-foreground">La pregunta {currentIndex + 1} está corrupta o incompleta originada por la IA.</p>
-        <Button onClick={() => router.push("/dashboard")} className="mt-8">Volver al Inicio</Button>
+        <h2 className="text-3xl font-black text-destructive">{plT.errorQuestion}</h2>
+        <p className="mt-6 text-xl text-muted-foreground font-medium">{plT.errorAI}</p>
+        <Button onClick={() => router.push("/dashboard")} className="mt-10 h-14 rounded-xl font-black px-8">
+           {plT.backToDashboard}
+        </Button>
       </div>
     );
   }
 
   return (
-    <div className="container mx-auto py-8 px-4 max-w-3xl min-h-[80vh] flex flex-col justify-center">
+    <div className="container mx-auto py-8 px-4 max-w-3xl min-h-[80vh] flex flex-col justify-center animate-in fade-in duration-500">
       
-      <div className="flex justify-between items-center mb-8">
-        <div className="flex flex-col">
-          <div className="text-muted-foreground font-semibold text-sm uppercase tracking-wider">
-            Pregunta {currentIndex + 1} de {questions.length}
+      <div className="flex justify-between items-end mb-10">
+        <div className="flex flex-col space-y-1">
+          <div className="text-muted-foreground font-black text-xs uppercase tracking-[0.3em] italic">
+            {plT.questionLabel} {currentIndex + 1} / {questions.length}
           </div>
           {timeLeft !== null && (
             <div className={cn(
-              "text-2xl font-black mt-1",
+              "text-5xl font-black tabular-nums transition-colors duration-300",
               timeLeft <= 5 ? "text-destructive animate-pulse" : "text-primary"
             )}>
               {timeLeft}s
             </div>
           )}
         </div>
-        <div className="bg-primary/10 text-primary px-6 py-2 rounded-2xl font-black shadow-sm border border-primary/20">
-          {score} pts
+        <div className="bg-primary/10 text-primary px-8 py-3 rounded-[1.5rem] font-black shadow-inner border-2 border-primary/20 text-2xl">
+          {score} <span className="text-sm uppercase italic opacity-70">pts</span>
         </div>
       </div>
 
-      <Card className="border-2 shadow-sm mb-6">
-        <CardHeader className="py-8">
-          <CardTitle className="text-2xl md:text-3xl text-center leading-relaxed">
+      <Card className="border-4 shadow-xl mb-10 rounded-[2.5rem] overflow-hidden bg-card/50 backdrop-blur-sm">
+        <CardHeader className="py-12 px-8">
+          <CardTitle className="text-3xl md:text-4xl text-center font-black leading-tight text-balance">
             {currentQ.questionText}
           </CardTitle>
         </CardHeader>
       </Card>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
         {currentQ?.options?.map((opt) => {
           const isSelected = selectedOption === opt.id;
           const isCorrect = Array.isArray(currentQ?.correctAnswer)
             ? currentQ.correctAnswer.includes(opt.id)
             : String(currentQ?.correctAnswer) === String(opt.id);
           
-          let btnClass = "border-2 text-left h-auto py-6 px-6 text-lg justify-start items-center flex gap-4 transition-all ";
+          let btnClass = "border-4 text-left h-auto py-8 px-8 text-xl justify-start items-center flex gap-5 transition-all rounded-[1.8rem] ";
           
           if (!isChecking) {
-            btnClass += "hover:border-primary hover:bg-primary/5 active:scale-[0.98]";
+            btnClass += "hover:border-primary hover:bg-primary/5 hover:scale-[1.02] shadow-md hover:shadow-xl active:scale-[0.98]";
           } else {
             if (isCorrect) {
-              btnClass += "border-success bg-success/10 text-success-foreground";
+              btnClass += "border-success bg-success/10 text-success-foreground shadow-lg shadow-success/10";
             } else if (isSelected && !isCorrect) {
-              btnClass += "border-destructive bg-destructive/10 text-destructive-foreground opacity-90 scale-[0.98]";
+              btnClass += "border-destructive bg-destructive/10 text-destructive-foreground opacity-90 scale-[0.98] shadow-inner";
             } else {
-              btnClass += "opacity-50 grayscale";
+              btnClass += "opacity-40 grayscale";
             }
           }
 
@@ -201,22 +206,24 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
               onClick={() => handleSelectOption(opt.id)}
               disabled={isChecking}
             >
-               <span className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0 font-bold">
+               <span className="w-10 h-10 rounded-full bg-muted flex items-center justify-center shrink-0 font-black text-sm border-2">
                  {opt.id}
                </span>
-               <span className="break-words whitespace-normal leading-tight">{opt.text}</span>
+               <span className="break-words whitespace-normal leading-snug font-bold">{opt.text}</span>
                
-               {isChecking && isCorrect && <CheckCircle2 className="ml-auto w-6 h-6 text-success shrink-0" />}
-               {isChecking && isSelected && !isCorrect && <XCircle className="ml-auto w-6 h-6 text-destructive shrink-0" />}
+               {isChecking && isCorrect && <CheckCircle2 className="ml-auto w-8 h-8 text-success shrink-0" />}
+               {isChecking && isSelected && !isCorrect && <XCircle className="ml-auto w-8 h-8 text-destructive shrink-0" />}
             </Button>
           );
         })}
       </div>
 
       {isChecking && currentQ.explanation && (
-        <div className="mt-8 p-6 bg-muted/50 rounded-xl border animate-in fade-in slide-in-from-bottom-4">
-          <h4 className="font-bold flex items-center gap-2 mb-2">Explicación</h4>
-          <p className="text-muted-foreground">{currentQ.explanation}</p>
+        <div className="mt-12 p-8 bg-muted/40 rounded-[2rem] border-2 border-dashed border-primary/20 animate-in slide-in-from-bottom-6 duration-700">
+          <h4 className="font-black text-lg flex items-center gap-3 mb-3 text-primary uppercase tracking-widest text-sm italic">
+             ✨ {plT.explanation}
+          </h4>
+          <p className="text-muted-foreground text-lg font-medium leading-relaxed">{currentQ.explanation}</p>
         </div>
       )}
 
