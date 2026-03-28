@@ -20,7 +20,7 @@ export default async function PlanesPage() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
         {/* Gratuito */}
         <Card className="flex flex-col shadow-sm">
           <CardHeader>
@@ -63,10 +63,11 @@ export default async function PlanesPage() {
           </CardHeader>
           <CardContent className="flex-1">
             <ul className="space-y-3">
-              <li className="flex items-center gap-2 text-sm font-medium"><CheckCircle2 className="h-5 w-5 text-primary" /> Quizzes generados ILIMITADOS</li>
-              <li className="flex items-center gap-2 text-sm font-medium"><CheckCircle2 className="h-5 w-5 text-primary" /> Soporte hasta 50 páginas por PDF</li>
+               <li className="flex items-center gap-2 text-sm font-medium"><CheckCircle2 className="h-5 w-5 text-primary" /> Quizzes generados ILIMITADOS</li>
+              <li className="flex items-center gap-2 text-sm font-medium"><CheckCircle2 className="h-5 w-5 text-primary" /> Soporte hasta 40 cargas de PDF al mes</li>
               <li className="flex items-center gap-2 text-sm font-medium"><CheckCircle2 className="h-5 w-5 text-primary" /> Salas Multijugador ILIMITADAS</li>
               <li className="flex items-center gap-2 text-sm font-medium"><CheckCircle2 className="h-5 w-5 text-primary" /> Hasta 50 jugadores por sala</li>
+              <li className="flex items-center gap-2 text-sm font-medium"><CheckCircle2 className="h-5 w-5 text-primary" /> Preguntas ILIMITADAS por Quiz</li>
             </ul>
           </CardContent>
           <CardFooter>
@@ -87,7 +88,7 @@ export default async function PlanesPage() {
         </Card>
 
         {/* Pase Único */}
-        <Card className="flex flex-col shadow-sm">
+         <Card className="flex flex-col shadow-sm">
           <CardHeader>
             <CardTitle className="text-2xl flex items-center gap-2"><Zap className="h-5 w-5 text-amber-500" /> Pase de Uso Único</CardTitle>
             <CardDescription>Paga sólo por lo que necesitas</CardDescription>
@@ -99,15 +100,41 @@ export default async function PlanesPage() {
           <CardContent className="flex-1">
             <ul className="space-y-3">
               <li className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" /> Desbloquea 1 Quiz específico</li>
+              <li className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" /> 5 preguntas adicionales (Total 10)</li>
               <li className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" /> Modo Multijugador activo</li>
               <li className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" /> Hasta 10 jugadores en la sala</li>
-              <li className="flex items-center gap-2 text-sm text-muted-foreground"><CheckCircle2 className="h-5 w-5" /> Dura para siempre en ese quiz</li>
             </ul>
           </CardContent>
           <CardFooter>
              <p className="text-xs text-muted-foreground text-center w-full">
                Este pase se adquiere directamente dentro del Lobby de cada Quiz.
              </p>
+          </CardFooter>
+        </Card>
+
+        {/* Corporativo */}
+        <Card className="flex flex-col shadow-sm border-dashed border-2">
+          <CardHeader>
+            <CardTitle className="text-2xl flex items-center gap-2">🏢 Corporativo</CardTitle>
+            <CardDescription>Para instituciones y empresas</CardDescription>
+            <div className="mt-4">
+              <span className="text-4xl font-extrabold">Personal</span>
+            </div>
+          </CardHeader>
+          <CardContent className="flex-1">
+            <ul className="space-y-3">
+              <li className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" /> Carga sistemática de PDFs</li>
+              <li className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" /> Cargas masivas ilimitadas</li>
+              <li className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" /> API de integración</li>
+              <li className="flex items-center gap-2 text-sm"><CheckCircle2 className="h-5 w-5 text-primary" /> Soporte personalizado 24/7</li>
+            </ul>
+          </CardContent>
+          <CardFooter>
+             <Link href="mailto:hola@testai.com" className="w-full">
+                <Button variant="outline" className="w-full text-base h-12 rounded-xl">
+                  Contáctanos
+                </Button>
+             </Link>
           </CardFooter>
         </Card>
 

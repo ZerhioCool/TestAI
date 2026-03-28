@@ -33,8 +33,14 @@ export default function EditQuizPage({ params }: { params: Promise<{ id: string 
   }, [resolvedParams.id]);
 
   const handleAiSuggest = async () => {
-    if (!isPro && questions.length >= 10) {
-      alert("Haz upgrade a Pro para generar más preguntas con IA.");
+    const currentLimit = isPro ? 50 : (quiz?.isUnlocked ? 10 : 6);
+    if (questions.length >= currentLimit) {
+      const message = isPro 
+        ? "Has alcanzado el límite de 50 preguntas." 
+        : (quiz?.isUnlocked 
+            ? "Con el Pase Único puedes tener hasta 10 preguntas." 
+            : "En el plan gratis puedes tener hasta 6 preguntas. Pásate a Pro para más.");
+      alert(message);
       return;
     }
     setGenerating(true);
@@ -141,12 +147,14 @@ export default function EditQuizPage({ params }: { params: Promise<{ id: string 
   };
 
   const handleAddQuestion = () => {
-    if (!isPro && questions.length >= 10) {
-      alert("Haz upgrade a Pro para agregar más de 10 preguntas.");
-      return;
-    }
-    if (questions.length >= 20) {
-      alert("Límite máximo de 20 preguntas alcanzado.");
+    const currentLimit = isPro ? 50 : (quiz?.isUnlocked ? 10 : 6);
+    if (questions.length >= currentLimit) {
+      const message = isPro 
+        ? "Has alcanzado el límite máximo de 50 preguntas." 
+        : (quiz?.isUnlocked 
+            ? "El Pase Único te permite hasta 10 preguntas." 
+            : "En el plan gratis el límite es de 6 preguntas. ¡Pásate a Pro para crear quizzes gigantes!");
+      alert(message);
       return;
     }
     setQuestions([...questions, {

@@ -8,11 +8,14 @@ export function Footer() {
           &copy; {new Date().getFullYear()} TestAI. Creado para evaluación interactiva.
         </p>
         <div className="flex items-center gap-4 text-sm">
-          <Link href="/terms" className="transition-colors hover:text-foreground">
+          <Link href="/terminos" className="transition-colors hover:text-foreground">
             Términos
           </Link>
-          <Link href="/privacy" className="transition-colors hover:text-foreground">
+          <Link href="/privacidad" className="transition-colors hover:text-foreground">
             Privacidad
+          </Link>
+          <Link href="/contacto" className="transition-colors hover:text-foreground">
+            Contáctenos
           </Link>
         </div>
       </div>

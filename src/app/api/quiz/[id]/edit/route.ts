@@ -20,6 +20,18 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
+    // Server-side validation of question limits
+    let isPro = false;
+    if (quiz.userId) {
+      const owners = await db.select().from(usersTable).where(eq(usersTable.id, quiz.userId)).limit(1);
+      if (owners.length > 0) isPro = owners[0].plan === 'pro';
+    }
+
+    const currentLimit = isPro ? 50 : (quiz.isUnlocked ? 10 : 6);
+    if (questions.length > currentLimit) {
+      return NextResponse.json({ error: `Tu plan permite un máximo de ${currentLimit} preguntas.` }, { status: 403 });
+    }
+
     // Identificar preguntas eliminadas
     const existingQs = await db.select({ id: questionsTable.id }).from(questionsTable).where(eq(questionsTable.quizId, id));
     const newIds = questions.map((q: any) => q.id);

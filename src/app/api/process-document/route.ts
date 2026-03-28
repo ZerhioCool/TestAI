@@ -11,9 +11,9 @@ Eres un creador experto de cuestionarios pedagógicos.
 Analiza el siguiente texto extraído de un documento y genera un cuestionario interactivo para evaluar los conocimientos del estudiante.
 
 REGLAS ESTRICTAS:
-1. Genera exactamente 5 preguntas relevantes que cubran los conceptos clave.
+1. Genera un número de preguntas adecuado basado en la extensión del texto (mínimo 5, máximo 15 si el usuario es Pro). Si el texto es corto, mantente en 5.
 2. Asegúrate de incluir distractores inteligentes (respuestas incorrectas pero plausibles).
-3. Todas las preguntas deben ser de tipo opción múltiple ("multiple_choice") con 4 opciones.
+3. Las preguntas pueden ser de tipo opción múltiple ("multiple_choice") con 4 opciones o verdadero/falso ("true_false") con 2 opciones.
 4. Tu respuesta DEBE ser un objeto JSON válido, sin delimitadores Markdown (\`\`\`json), que cumpla OBLIGATORIAMENTE la siguiente estructura exacta:
 
 {
@@ -62,7 +62,10 @@ export async function POST(req: NextRequest) {
         const usedQuizzes = existingUser[0].quizzesThisMonth || 0;
         
         if (userPlan === 'free' && usedQuizzes >= 1) {
-          return NextResponse.json({ error: "Límite mensual alcanzado (1 Quiz Gratis). Pásate a Pro para jugar ilimitado." }, { status: 403 });
+          return NextResponse.json({ error: "Límite mensual alcanzado (1 Quiz Gratis). Pásate a Pro para jugar hasta 40 al mes." }, { status: 403 });
+        }
+        if (userPlan === 'pro' && usedQuizzes >= 40) {
+          return NextResponse.json({ error: "Has alcanzado el límite de 40 quizzes este mes. Contacta con soporte para el plan Corporativo." }, { status: 403 });
         }
         isFreeUser = userPlan === 'free';
       } else {
@@ -108,7 +111,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Máximo 2 imágenes permitidas en el plan gratis." }, { status: 400 });
     }
 
-    const geminiParts: any[] = [PEDAGOGICAL_PROMPT];
+    const maxQuestions = isFreeUser ? 5 : 15;
+    const dynamicPrompt = `${PEDAGOGICAL_PROMPT}\n\nREQUERIMIENTO ADICIONAL: Genera hasta ${maxQuestions} preguntas si el contenido lo permite, mezclando selección múltiple y verdadero/falso.`;
+
+    const geminiParts: any[] = [dynamicPrompt];
     let sourceFileName = "Cuestionario.pdf";
     if (files.length > 0 && files[0] && typeof files[0] === 'object' && 'name' in files[0]) {
       sourceFileName = (files[0] as File).name;
