@@ -25,7 +25,7 @@ export default async function DashboardPage(props: { searchParams: Promise<{ [ke
   const filterType = (searchParams?.filter as string) || "all";
 
   // Construir condiciones de Drizzle
-  let quizConditions: any[] = [];
+  const quizConditions: any[] = [];
   
   // 1. Manejo del tipo de filtro
   if (filterType === "mine") {

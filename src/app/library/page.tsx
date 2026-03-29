@@ -17,7 +17,7 @@ export default async function LibraryPage(props: { searchParams: Promise<{ [key:
   const { data: { user } } = await supabase.auth.getUser();
 
   // Fetch only public quizzes
-  let conditions = [eq(quizzesTable.isPublic, true)];
+  const conditions = [eq(quizzesTable.isPublic, true)];
   
   if (queryTerm) {
     const { ilike } = await import("drizzle-orm");

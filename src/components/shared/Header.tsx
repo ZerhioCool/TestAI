@@ -70,15 +70,15 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2 md:gap-4">
-          {/* Language Switcher */}
+          {/* Language Switcher - Hidden on very small screens to avoid crowding, but usually fine */}
           <Button 
-            variant="ghost" 
+            variant="outline" 
             size="sm" 
             onClick={toggleLanguage}
-            className="rounded-full gap-2 font-bold hover:bg-primary/10 transition-colors"
+            className="rounded-full gap-2 font-bold hover:bg-primary/10 transition-all border-primary/20 hover:border-primary/50"
           >
-            <Languages className="h-4 w-4" />
-            <span className="uppercase">{language}</span>
+            <Languages className="h-4 w-4 text-primary" />
+            <span className="uppercase">{language === 'es' ? 'Español' : 'English'}</span>
           </Button>
 
           <div className="hidden md:flex items-center gap-4">
@@ -111,7 +111,7 @@ export function Header() {
             href="/upload" 
             className={cn(
               buttonVariants({ variant: "default" }),
-              "rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95 font-bold"
+              "rounded-full shadow-lg transition-transform hover:scale-105 active:scale-95 font-bold px-6"
             )}
           >
             {language === 'es' ? "Crear Quiz" : "Create Quiz"}
@@ -143,6 +143,30 @@ export function Header() {
                 {link.label}
               </Link>
             ))}
+            
+            {/* Language Switcher in Mobile Menu */}
+            <div className="border-t pt-4">
+              <p className="text-xs text-muted-foreground mb-2 px-1 uppercase tracking-widest">{language === 'es' ? 'Cambiar Idioma' : 'Change Language'}</p>
+              <div className="flex gap-2 text-base">
+                <Button 
+                  variant={language === 'es' ? 'default' : 'outline'} 
+                  size="sm" 
+                  className="rounded-xl flex-1 font-bold"
+                  onClick={() => { setLanguage('es'); setIsMenuOpen(false); }}
+                >
+                  Español
+                </Button>
+                <Button 
+                  variant={language === 'en' ? 'default' : 'outline'} 
+                  size="sm" 
+                  className="rounded-xl flex-1 font-bold"
+                  onClick={() => { setLanguage('en'); setIsMenuOpen(false); }}
+                >
+                  English
+                </Button>
+              </div>
+            </div>
+
             {mounted && user ? (
               <>
                 <Link 
