@@ -41,11 +41,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     return translations[language][section];
   };
 
-  // Prevent hydration styling issues if needed
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
   return (
     <LanguageContext.Provider value={{ language, setLanguage, t }}>
       {children}
