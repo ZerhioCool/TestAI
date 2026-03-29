@@ -75,10 +75,9 @@ export function Header() {
             variant="outline" 
             size="sm" 
             onClick={toggleLanguage}
-            className="rounded-full gap-2 font-bold hover:bg-primary/10 transition-all border-primary/20 hover:border-primary/50"
+            className="rounded-full font-black hover:bg-primary/10 transition-all border-primary/20 hover:border-primary/50 px-3 min-w-[40px]"
           >
-            <Languages className="h-4 w-4 text-primary" />
-            <span className="uppercase">{language === 'es' ? 'Español' : 'English'}</span>
+            <span className="uppercase text-xs">{language === 'es' ? 'ES' : 'EN'}</span>
           </Button>
 
           <div className="hidden md:flex items-center gap-4">
