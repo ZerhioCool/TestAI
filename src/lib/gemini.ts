@@ -1,9 +1,10 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GEMINI_API_KEY;
-const modelName = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+// Forzado a gemini-2.5-flash para solucionar el error de cuota en Vercel
+const modelName = "gemini-2.5-flash";
 
-console.log(`🤖 Gemini Initialized with model: ${modelName}`);
+console.log(`🚀 Gemini FORCE-LOADED with: ${modelName}`);
 
 
 if (!apiKey) {
