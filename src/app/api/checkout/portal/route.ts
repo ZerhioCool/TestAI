@@ -5,11 +5,13 @@ import { db } from "@/db";
 import { usersTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2024-04-10" as any,
-});
+// Stripe is initialized inside the POST handler
 
 export async function POST(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: "2024-04-10" as any,
+  });
+
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();

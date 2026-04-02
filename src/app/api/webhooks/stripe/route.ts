@@ -4,13 +4,15 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { usersTable, quizzesTable } from "@/db/schema";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: "2024-04-10" as any,
-});
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+// Stripe is initialized inside the POST handler
 
 export async function POST(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
+    apiVersion: "2024-04-10" as any,
+  });
+
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
   if (!webhookSecret) {
     return NextResponse.json({ error: "Stripe Webhook Secret is not set" }, { status: 500 });
   }
