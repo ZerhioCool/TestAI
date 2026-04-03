@@ -1,8 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GEMINI_API_KEY;
-// Forzado a gemini-2.5-flash para solucionar el error de cuota en Vercel
-const modelName = "gemini-2.5-flash";
+// Downgrade a gemini-1.5-flash ya que los modelos 2.0 tienen limit: 0 (Sin Free Tier disponible en esta cuenta/región)
+const modelName = "gemini-1.5-flash";
 
 console.log(`🚀 Gemini FORCE-LOADED with: ${modelName}`);
 
