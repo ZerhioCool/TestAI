@@ -1,8 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GEMINI_API_KEY;
-// Downgrade a gemini-1.5-flash ya que los modelos 2.0 tienen limit: 0 (Sin Free Tier disponible en esta cuenta/región)
-const modelName = "gemini-1.5-flash";
+// Anclado a una versión antigua específica (-002) porque Google auto-actualiza los alias a 2.0 y el Free Tier falla
+const modelName = "gemini-1.5-flash-002";
 
 console.log(`🚀 Gemini FORCE-LOADED with: ${modelName}`);
 
