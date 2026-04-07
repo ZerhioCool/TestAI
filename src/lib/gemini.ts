@@ -1,8 +1,8 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 const apiKey = process.env.GEMINI_API_KEY;
-// Anclado a una versión antigua específica (-002) porque Google auto-actualiza los alias a 2.0 y el Free Tier falla
-const modelName = "gemini-1.5-flash-002";
+// Anclado a Gemini 3 Flash (Abril 2026) para evitar la obsolescencia de las versiones 1.5 y 2.0
+const modelName = "gemini-3-flash";
 
 console.log(`🚀 Gemini FORCE-LOADED with: ${modelName}`);
 
