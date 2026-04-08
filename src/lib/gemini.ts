@@ -14,9 +14,11 @@ if (!apiKey) {
 export const genAI = new GoogleGenerativeAI(apiKey!);
 
 export const getGeminiModel = (config?: any) => {
+  // Forzamos el modelo aquí para evitar que cualquier configuración externa lo sobrescriba
+  // Priorizamos gemini-3-flash
   return genAI.getGenerativeModel({
-    model: modelName,
     ...config,
+    model: "gemini-3-flash",
   });
 };
 
