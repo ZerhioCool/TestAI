@@ -146,9 +146,9 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 4. Conectar con Gemini 3 Flash
+    // 4. Conectar con gemini-2.0-flash
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-3-flash",
+      model: "gemini-2.0-flash",
       generationConfig: {
         responseMimeType: "application/json",
       }
