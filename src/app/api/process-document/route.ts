@@ -5,6 +5,10 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 export const runtime = "nodejs";
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+const model = genAI.getGenerativeModel(
+  { model: process.env.GEMINI_MODEL || "gemini-3-flash" },
+  { apiVersion: 'v1' } // <--- ESTO ES LA CLAVE
+);
 
 const PEDAGOGICAL_PROMPT = `
 Eres un creador experto de cuestionarios pedagógicos. 
