@@ -16,7 +16,7 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Insert new session
+    // 1. Guardar la sesión multijugador
     await db.insert(multiplayerSessionsTable).values({
       quizId: id,
       hostId: user.id,
@@ -25,6 +25,12 @@ export async function POST(req: NextRequest, { params }: { params: Promise<{ id:
       playersCount: playersCount || 0,
       leaderboard: leaderboard || {},
     });
+
+    // 2. Si el test tiene fecha de expiración (es temporal), marcar como usado para evitar re-uso excesivo
+    const { quizzesTable } = await import('@/db/schema');
+    await db.update(quizzesTable)
+      .set({ usedAt: new Date() })
+      .where(eq(quizzesTable.id, id));
 
     return NextResponse.json({ success: true });
   } catch (error: any) {

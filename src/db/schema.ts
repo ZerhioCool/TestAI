@@ -28,6 +28,8 @@ export const quizzesTable = pgTable("quizzes", {
   pinCode: text("pin_code").unique(),
   isUnlocked: boolean("is_unlocked").default(false), // Micro-transacción atada al quiz
   maxGuestPlayers: integer("max_guest_players").default(0), // Límite para pase de 1 uso
+  expiresAt: timestamp("expires_at", { withTimezone: true }), // Expiración (24h gratis, 10d pase)
+  usedAt: timestamp("used_at", { withTimezone: true }), // Cuándo se usó el Pase (un solo uso)
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
 });
 

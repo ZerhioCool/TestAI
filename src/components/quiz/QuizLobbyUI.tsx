@@ -32,9 +32,6 @@ export function QuizLobbyUI({ quiz, user, appUrl }: QuizLobbyProps) {
         <div className="inline-flex items-center rounded-full border bg-primary/10 px-4 py-1.5 text-sm font-black text-primary uppercase tracking-wider">
           {lobT.title}
         </div>
-        <h1 className="text-5xl md:text-6xl font-black tracking-tighter text-balance">
-          {quiz.title}
-        </h1>
         <p className="text-xl text-muted-foreground font-medium">
           {quiz.questionCount} {t('common').questions} • TestAI
         </p>
@@ -62,7 +59,7 @@ export function QuizLobbyUI({ quiz, user, appUrl }: QuizLobbyProps) {
             </CardTitle>
             <CardDescription className="text-lg text-balance mt-3 font-medium">
               {isAnonymousQuiz 
-                ? (language === 'es' ? "Regístrate gratis para guardar este quiz." : "Register for free to save this quiz.")
+                ? (language === 'es' ? "Regístrate gratis para guardar este test." : "Register for free to save this test.")
                 : lobT.soloDesc}
             </CardDescription>
           </CardHeader>
@@ -125,7 +122,7 @@ export function QuizLobbyUI({ quiz, user, appUrl }: QuizLobbyProps) {
                     <Button type="submit" variant="outline" className="w-full h-auto py-5 border-4 rounded-2xl hover:border-primary/50 hover:bg-primary/5 flex flex-col items-center justify-center gap-1 group transition-all">
                       <span className="text-xl font-black">{lobT.buyPass}</span>
                       <span className="text-sm text-muted-foreground font-bold">
-                        {language === 'es' ? "Hasta 10 jugadores para este Quiz" : "Up to 10 players for this Quiz"}
+                        {language === 'es' ? "Hasta 10 jugadores para este Test" : "Up to 10 players for this Test"}
                       </span>
                     </Button>
                   </form>
@@ -143,7 +140,7 @@ export function QuizLobbyUI({ quiz, user, appUrl }: QuizLobbyProps) {
                     <Button type="submit" className="w-full h-auto py-5 bg-gradient-to-br from-indigo-600 to-purple-700 hover:from-indigo-700 hover:to-purple-800 border-none rounded-2xl flex flex-col items-center justify-center gap-1 shadow-2xl shadow-indigo-500/30 text-white transition-all active:scale-95">
                       <span className="text-xl font-black flex items-center gap-2"><Crown className="h-6 w-6 fill-yellow-400 text-yellow-500"/> {lobT.buyPro}</span>
                       <span className="text-sm text-indigo-100 font-bold">
-                        {language === 'es' ? "Quizzes y Jugadores Ilimitados" : "Unlimited Quizzes & Players"}
+                        {language === 'es' ? "Tests Ilimitados y hasta 50 jugadores" : "Unlimited Tests & up to 50 players"}
                       </span>
                     </Button>
                   </form>

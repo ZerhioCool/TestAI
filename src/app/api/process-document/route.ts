@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getPlanConfig } from "@/lib/plans";
 
 // Asegurarse de usar Node.js runtime nativo para poder usar pdf-parse
 export const runtime = "nodejs";
@@ -7,8 +8,8 @@ export const runtime = "nodejs";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 const PEDAGOGICAL_PROMPT = `
-Eres un creador experto de cuestionarios pedagógicos. 
-Analiza el siguiente texto extraído de un documento y genera un cuestionario interactivo para evaluar los conocimientos del estudiante.
+Eres un creador experto de cuestionarios pedagógicos (Tests). 
+Analiza el siguiente texto extraído de un documento y genera un test interactivo para evaluar los conocimientos del estudiante.
 
 REGLAS ESTRICTAS:
 1. Genera un número de preguntas adecuado basado en la extensión del texto (mínimo 5, máximo 15 si el usuario es Pro). Si el texto es corto, mantente en 5.
@@ -17,7 +18,7 @@ REGLAS ESTRICTAS:
 4. Tu respuesta DEBE ser un objeto JSON válido, sin delimitadores Markdown (\`\`\`json), que cumpla OBLIGATORIAMENTE la siguiente estructura exacta:
 
 {
-  "title": "Un título corto y atractivo para el quiz basado en el contenido",
+  "title": "Un título corto y atractivo para el test basado en el contenido",
   "questions": [
     {
       "type": "multiple_choice",
@@ -60,12 +61,13 @@ export async function POST(req: NextRequest) {
       if (existingUser.length > 0) {
         const userPlan = existingUser[0].plan || 'free';
         const usedQuizzes = existingUser[0].quizzesThisMonth || 0;
+        const planConfig = getPlanConfig(userPlan);
         
-        if (userPlan === 'free' && usedQuizzes >= 1) {
-          return NextResponse.json({ error: "Límite mensual alcanzado (1 Quiz Gratis). Pásate a Pro para jugar hasta 40 al mes." }, { status: 403 });
+        if (userPlan === 'free' && usedQuizzes >= planConfig.maxQuizzesPerMonth) {
+          return NextResponse.json({ error: `Límite mensual alcanzado (${planConfig.maxQuizzesPerMonth} Test Gratis). Pásate a Pro para jugar ilimitado.` }, { status: 403 });
         }
-        if (userPlan === 'pro' && usedQuizzes >= 40) {
-          return NextResponse.json({ error: "Has alcanzado el límite de 40 quizzes este mes. Contacta con soporte para el plan Corporativo." }, { status: 403 });
+        if (userPlan === 'pro' && usedQuizzes >= planConfig.maxQuizzesPerMonth) {
+          return NextResponse.json({ error: "Has alcanzado tu límite mensual de procesamiento. Contacta con soporte para ampliar tu plan." }, { status: 403 });
         }
         isFreeUser = userPlan === 'free';
       } else {
@@ -112,7 +114,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Máximo 2 imágenes permitidas en el plan gratis." }, { status: 400 });
     }
 
-    const maxQuestions = isFreeUser ? 5 : 15;
+    const config = getPlanConfig(isFreeUser ? 'free' : 'pro');
+    const maxQuestions = config.maxQuestionsPerQuiz;
     const targetLang = language === 'en' ? 'English' : 'Spanish';
     const dynamicPrompt = `${PEDAGOGICAL_PROMPT}\n\nREQUERIMIENTO ADICIONAL: Genera hasta ${maxQuestions} preguntas si el contenido lo permite, mezclando selección múltiple y verdadero/falso. TODO EL CONTENIDO (título, preguntas, opciones, explicaciones) debe estar obligatoriamente en idioma: ${targetLang}.`;
 
@@ -133,8 +136,8 @@ export async function POST(req: NextRequest) {
         const pdfDoc = await PDFDocument.load(buffer, { ignoreEncryption: true });
         const pageCount = pdfDoc.getPageCount();
 
-        if (isFreeUser && pageCount > 3) {
-           return NextResponse.json({ error: `Los PDFs están limitados a 3 hojas en el plan gratuito. Tu PDF tiene ${pageCount}.` }, { status: 403 });
+        if (isFreeUser && pageCount > config.maxPagesPerPDF) {
+           return NextResponse.json({ error: `Los PDFs están limitados a ${config.maxPagesPerPDF} hojas en el plan gratuito. Tu PDF tiene ${pageCount}.` }, { status: 403 });
         }
       }
 
@@ -146,9 +149,9 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 4. Conectar con gemini-3-flash
+    // 4. Conectar con gemini-3.1-flash-lite
     const model = genAI.getGenerativeModel({ 
-      model: "	gemini-3.1-flash-lite-preview",
+      model: "gemini-3.1-flash-lite-preview",
       generationConfig: {
         responseMimeType: "application/json",
       }
@@ -170,14 +173,18 @@ export async function POST(req: NextRequest) {
     const pinString = Math.floor(10000 + Math.random() * 90000).toString();
     const shareTokenStr = nanoid(10);
 
+    const expiresAt = isFreeUser ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null;
+
     const [newQuiz] = await db.insert(quizzesTable).values({
       userId: dbUserId,
-      title: quizData.title?.substring(0, 255) || "Cuestionario de TestAI",
+      title: quizData.title?.substring(0, 255) || "Test de TestAI",
       sourceLang: language,
       questionCount: quizData.questions?.length || 5,
       shareToken: shareTokenStr,
       pinCode: pinString,
       sourceFileUrl: sourceFileName, 
+      expiresAt: expiresAt,
+      maxGuestPlayers: config.maxPlayers
     }).returning();
 
     const questionsToInsert = (quizData.questions || []).map((q: any, i: number) => ({

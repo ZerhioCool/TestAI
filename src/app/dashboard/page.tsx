@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
 import { db } from "@/db";
 import { quizzesTable, usersTable, multiplayerSessionsTable } from "@/db/schema";
-import { eq, desc, and, or, ilike } from "drizzle-orm";
+import { eq, desc, and, or, ilike, gt, isNull } from "drizzle-orm";
 import { DashboardUI } from "@/components/dashboard/DashboardUI";
 
 export default async function DashboardPage(props: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
@@ -37,7 +37,10 @@ export default async function DashboardPage(props: { searchParams: Promise<{ [ke
     quizConditions.push(or(eq(quizzesTable.userId, user.id), eq(quizzesTable.isPublic, true)));
   }
 
-  // 2. Manejo de la búsqueda por texto
+  // 3. Filtrar expirados (Solo mostrar los que no han expirado o no tienen expiración)
+  quizConditions.push(or(isNull(quizzesTable.expiresAt), gt(quizzesTable.expiresAt, new Date())));
+
+  // 4. Manejo de la búsqueda por texto
   if (queryTerm) {
     quizConditions.push(ilike(quizzesTable.title, `%${queryTerm}%`));
   }

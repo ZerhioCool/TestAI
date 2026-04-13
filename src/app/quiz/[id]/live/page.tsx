@@ -157,12 +157,46 @@ export default function PlayerLivePage({ params }: { params: Promise<{ id: strin
          <div className="absolute top-4 right-4 animate-in fade-in slide-in-from-top-4 duration-500">
           <AudioToggle isPlaying={isPlaying} onToggle={toggleMusic} />
         </div>
-         <Card className="max-w-md w-full text-center p-8 border-t-4 border-t-primary shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in duration-500">
-           <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-4" />
-           <h2 className="text-3xl font-bold mb-2">{plT.gameOver}</h2>
-           <p className="text-3xl font-black text-primary mb-2 mt-4">{score} pts</p>
-           <p className="text-muted-foreground mb-8">{plT.gamePodiumNotice}</p>
-           <Button onClick={() => router.push('/')} className="w-full h-14 text-lg font-black rounded-2xl shadow-lg shadow-primary/20">{plT.backToDashboard}</Button>
+         <Card className="max-w-2xl w-full text-center p-8 border-t-4 border-t-primary shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in duration-500 max-h-[90vh] flex flex-col">
+           <div className="shrink-0">
+             <Trophy className="w-20 h-20 text-yellow-500 mx-auto mb-4" />
+             <h2 className="text-3xl font-bold mb-2">{plT.gameOver}</h2>
+             <p className="text-3xl font-black text-primary mb-2 mt-4">{score} pts</p>
+             <p className="text-muted-foreground mb-8">{plT.gamePodiumNotice}</p>
+           </div>
+
+           <div className="flex-grow overflow-y-auto space-y-6 text-left pr-2 custom-scrollbar pb-8">
+             <h3 className="text-2xl font-black flex items-center gap-3 italic border-b-2 pb-2">
+               📖 {language === 'es' ? "Revisión de Respuestas" : "Answer Review"}
+             </h3>
+             {questions.map((q, idx) => (
+               <div key={q.id} className="p-5 bg-background rounded-2xl border-2 shadow-sm space-y-3">
+                  <p className="font-bold text-md leading-tight">
+                    <span className="text-primary mr-2 font-black italic">#{idx+1}</span> {q.questionText}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {q.options.map((opt: any) => {
+                      const isCorrect = Array.isArray(q.correctAnswer) ? q.correctAnswer.includes(opt.id) : q.correctAnswer === opt.id;
+                      return (
+                        <span key={opt.id} className={cn(
+                          "px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-widest border-2",
+                          isCorrect ? "bg-success/10 border-success text-success" : "bg-muted border-transparent text-muted-foreground opacity-60"
+                        )}>
+                          {opt.id}: {opt.text}
+                        </span>
+                      );
+                    })}
+                  </div>
+                  {q.explanation && (
+                    <div className="p-3 bg-primary/5 rounded-xl text-xs italic font-medium border-l-4 border-primary">
+                      {q.explanation}
+                    </div>
+                  )}
+               </div>
+             ))}
+           </div>
+
+           <Button onClick={() => router.push('/')} className="w-full h-14 text-lg font-black rounded-2xl shadow-lg shadow-primary/20 mt-4 shrink-0">{plT.backToDashboard}</Button>
          </Card>
        </div>
      );

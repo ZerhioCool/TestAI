@@ -6,15 +6,15 @@ export const runtime = "nodejs";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 const SYSTEM_PROMPT = `
-Eres un experto en pedagogía y creación de cuestionarios. 
-Tu tarea es generar preguntas de alta calidad para un quiz interactivo.
+Eres un experto en pedagogía y creación de tests. 
+Tu tarea es generar preguntas de alta calidad para un test interactivo.
 
 REGLAS:
 1. Las preguntas pueden ser de tipo "multiple_choice" (4 opciones) o "true_false" (2 opciones).
 2. Proporciona distractores plausibles para las preguntas de opción múltiple.
 3. El formato de respuesta DEBE ser JSON puro, sin bloques de código Markdown.
-4. Si se pide generar un quiz completo, devuelve un objeto con "title" y "questions".
-5. Si se pide sugerir preguntas para un quiz existente, devuelve un array de "questions".
+4. Si se pide generar un test completo, devuelve un objeto con "title" y "questions".
+5. Si se pide sugerir preguntas para un test existente, devuelve un array de "questions".
 
 Estructura de Pregunta:
 {
@@ -45,18 +45,18 @@ export async function POST(req: NextRequest) {
     const targetLang = language === 'en' ? 'English' : 'Spanish';
     let prompt = "";
     if (type === "bulk") {
-      prompt = `Genera un quiz completo con 5-10 preguntas sobre el tema: "${topic}". 
+      prompt = `Genera un test completo con 5-10 preguntas sobre el tema: "${topic}". 
       TODO EL CONTENIDO debe estar en idioma: ${targetLang}.
-      Devuelve un objeto JSON con: { "title": "Título del Quiz", "questions": [...] }`;
+      Devuelve un objeto JSON con: { "title": "Título del Test", "questions": [...] }`;
     } else {
-      prompt = `Sugiere exactamente ${suggestedCount} nuevas preguntas para un quiz sobre el tema: "${topic || 'General'}". 
+      prompt = `Sugiere exactamente ${suggestedCount} nuevas preguntas para un test sobre el tema: "${topic || 'General'}". 
       TODO EL CONTENIDO debe estar en idioma: ${targetLang}.
-      Actualmente el quiz tiene ${existingQuestionsCount || 0} preguntas. No repitas conceptos si es posible.
+      Actualmente el test tiene ${existingQuestionsCount || 0} preguntas. No repitas conceptos si es posible.
       Devuelve un array JSON directo de objetos de pregunta.`;
     }
 
     const model = genAI.getGenerativeModel({ 
-      model: "	gemini-3.1-flash-lite-preview",
+      model: "gemini-3.1-flash-lite-preview",
       generationConfig: {
         responseMimeType: "application/json",
       }

@@ -49,13 +49,20 @@ export async function POST(req: NextRequest) {
           .where(eq(usersTable.id, userId));
         console.log("User updated to PRO:", userId);
       } else if (type === "pass") {
-        // Unlock specific quiz with max length 10
+        // Unlock specific quiz with max length 10 and 10 days expiry
         const quizId = session.metadata?.quizId;
         if (quizId) {
+          const tenDaysFromNow = new Date();
+          tenDaysFromNow.setDate(tenDaysFromNow.getDate() + 10);
+
           await db.update(quizzesTable)
-            .set({ isUnlocked: true, maxGuestPlayers: 10 })
+            .set({ 
+              isUnlocked: true, 
+              maxGuestPlayers: 10,
+              expiresAt: tenDaysFromNow
+            })
             .where(eq(quizzesTable.id, quizId));
-          console.log("Quiz unlocked for user:", quizId);
+          console.log("Quiz unlocked for user with 10 days expiry:", quizId);
         }
       }
     }

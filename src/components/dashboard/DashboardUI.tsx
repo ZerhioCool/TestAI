@@ -34,7 +34,7 @@ export function DashboardUI({ user, userQuizzes, userSessions, stats, isPro, err
         <div className="space-y-2">
           <h1 className="text-4xl font-black tracking-tight">{dashT.title}</h1>
           <p className="text-muted-foreground text-lg font-medium">
-            {language === 'es' ? `Hola, ${user.email?.split("@")[0]}. Aquí están tus cuestionarios.` : `Hello, ${user.email?.split("@")[0]}. Here are your quizzes.`}
+            {language === 'es' ? `Hola, ${user.email?.split("@")[0]}. Aquí están tus tests.` : `Hello, ${user.email?.split("@")[0]}. Here are your tests.`}
           </p>
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
@@ -95,7 +95,7 @@ export function DashboardUI({ user, userQuizzes, userSessions, stats, isPro, err
 
       <Tabs defaultValue="quizzes" className="w-full">
         <TabsList className="mb-8 h-auto p-1.5 bg-muted/50 rounded-2xl grid grid-cols-2 w-full sm:w-[450px] border-2 shadow-inner">
-          <TabsTrigger value="quizzes" className="rounded-xl py-3 font-black transition-all data-[state=active]:shadow-md"><FileText className="w-5 h-5 mr-2" /> {language === 'es' ? "Mis Quizzes" : "My Quizzes"}</TabsTrigger>
+          <TabsTrigger value="quizzes" className="rounded-xl py-3 font-black transition-all data-[state=active]:shadow-md"><FileText className="w-5 h-5 mr-2" /> {language === 'es' ? "Mis Tests" : "My Tests"}</TabsTrigger>
           <TabsTrigger value="reports" className="rounded-xl py-3 font-black transition-all data-[state=active]:shadow-md"><BarChart3 className="w-5 h-5 mr-2" /> {language === 'es' ? "Reportes Finales" : "Final Reports"}</TabsTrigger>
         </TabsList>
         
@@ -132,6 +132,12 @@ export function DashboardUI({ user, userQuizzes, userSessions, stats, isPro, err
                         <Clock className="mr-2 h-3.5 w-3.5" />
                         {new Date(quiz.createdAt || "").toLocaleDateString()}
                       </span>
+                      {quiz.expiresAt && (
+                        <span className="flex items-center text-[10px] text-destructive font-black uppercase tracking-tighter bg-destructive/5 px-2 py-1 rounded-md animate-pulse">
+                          <AlertCircle className="mr-1 h-3 w-3" />
+                          {language === 'es' ? "Caduca hoy" : "Expires today"}
+                        </span>
+                      )}
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="flex-1 pt-6 px-6">
