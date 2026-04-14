@@ -16,8 +16,11 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "TestAI - Transforma tus PDFs en Quizzes Interactivos",
-  description: "Crea automáticamente juegos de trivia y cuestionarios a partir de tus apuntes, PDFs o imágenes usando IA.",
+  title: "QuickAITest - Transforma tus apuntes y PDFs en Juegos Interactivos",
+  description: "Crea juegos de trivia y cuestionarios automáticamente con IA a partir de tus archivos.",
+  icons: {
+    icon: "/QuickAItestlogo.png",
+  },
 };
 
 export default function RootLayout({

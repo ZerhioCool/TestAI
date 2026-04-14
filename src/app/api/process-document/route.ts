@@ -203,7 +203,7 @@ REQUERIMIENTO ADICIONAL:
 
     const [newQuiz] = await db.insert(quizzesTable).values({
       userId: dbUserId,
-      title: quizData.title?.substring(0, 255) || "Test de TestAI",
+      title: quizData.title?.substring(0, 255) || "Test de QuickAITest",
       sourceLang: language,
       questionCount: quizData.questions?.length || 5,
       shareToken: shareTokenStr,

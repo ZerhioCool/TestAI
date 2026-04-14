@@ -12,7 +12,7 @@ export function Footer() {
       <div className="container mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-4 sm:flex-row sm:px-6 lg:px-8">
         <div className="flex flex-col items-center sm:items-start gap-1">
           <p className="text-sm font-medium italic">
-            &copy; {new Date().getFullYear()} {fT.copyright}
+            {fT.copyright}
           </p>
           <p className="text-[10px] font-black opacity-20 hover:opacity-100 transition-opacity">v1.2-G3-FORCE</p>
         </div>

@@ -227,7 +227,7 @@ export default function AdminLivePage({ params }: { params: Promise<{ id: string
                         level="H"
                         includeMargin={true}
                         imageSettings={{
-                          src: "/TestAI logo.png",
+                          src: "/QaiTnamelogo.png",
                           x: undefined,
                           y: undefined,
                           height: 40,

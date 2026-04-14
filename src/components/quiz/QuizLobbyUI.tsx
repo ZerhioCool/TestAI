@@ -33,7 +33,7 @@ export function QuizLobbyUI({ quiz, user, appUrl }: QuizLobbyProps) {
           {lobT.title}
         </div>
         <p className="text-xl text-muted-foreground font-medium">
-          {quiz.questionCount} {t('common').questions} • TestAI
+          {quiz.questionCount} {t('common').questions} • QuickAITest
         </p>
         {isCreator && (
           <div className="pt-2">

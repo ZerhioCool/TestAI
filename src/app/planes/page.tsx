@@ -13,7 +13,7 @@ export default async function PlanesPage() {
     <div className="container mx-auto py-16 px-4 max-w-6xl min-h-[85vh] flex flex-col justify-center">
       <div className="text-center space-y-4 mb-16">
         <h1 className="text-4xl md:text-6xl font-black tracking-tight text-balance">
-          Desbloquea el poder de <span className="text-primary">TestAI</span>
+          Desbloquea el poder de <span className="text-primary">QuickAITest</span>
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-balance">
           Desde generar quizzes gratis hasta crear salas enormes interactuando con +50 alumnos. Elige tu plan.
@@ -130,7 +130,7 @@ export default async function PlanesPage() {
             </ul>
           </CardContent>
           <CardFooter>
-             <Link href="mailto:hola@testai.com" className="w-full">
+             <Link href="mailto:info@quickaitest.com" className="w-full">
                 <Button variant="outline" className="w-full text-base h-12 rounded-xl">
                   Contáctanos
                 </Button>

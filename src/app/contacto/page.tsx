@@ -33,8 +33,8 @@ export default function ContactPage() {
             <CardDescription className="text-base">{contactTranslations.emailDesc}</CardDescription>
           </CardHeader>
           <CardContent className="pt-6">
-            <p className="text-lg font-bold text-primary mb-4">hola@testai.com</p>
-            <Link href="mailto:hola@testai.com">
+            <p className="text-lg font-bold text-primary mb-4">info@quickaitest.com</p>
+            <Link href="mailto:info@quickaitest.com">
                <Button className="w-full h-12 text-lg font-bold rounded-xl shadow-lg shadow-primary/20">
                  {contactTranslations.emailBtn}
                </Button>
@@ -66,7 +66,7 @@ export default function ContactPage() {
         </div>
         <h2 className="text-3xl font-black mb-4 relative z-10">{contactTranslations.corporateTitle}</h2>
         <p className="text-lg mb-8 relative z-10 font-medium">{contactTranslations.corporateDesc}</p>
-        <Link href="mailto:corporativo@testai.com">
+        <Link href="mailto:info@quickaitest.com">
            <Button size="lg" className="rounded-2xl px-12 h-14 text-lg font-black bg-primary hover:bg-primary/90 transition-transform active:scale-95 shadow-2xl relative z-10">
              {contactTranslations.corporateBtn}
            </Button>

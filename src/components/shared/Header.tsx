@@ -50,7 +50,7 @@ export function Header() {
         <div className="flex items-center gap-2">
           <Link href="/" className="flex items-center transition-opacity hover:opacity-80">
             <div className="relative h-10 overflow-hidden flex items-center justify-center">
-              <img src="/TestAIlogoname.png" alt="TestAI Logo" className="object-contain h-full w-auto" />
+              <img src="/QaiTnamelogo.png" alt="QuickAITest Logo" className="object-contain h-full w-auto block md:block" />
             </div>
           </Link>
         </div>
