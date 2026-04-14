@@ -42,7 +42,9 @@ export default function PlayQuizPage({ params }: { params: Promise<{ id: string 
   useEffect(() => {
     async function loadQuiz() {
       try {
-        const res = await fetch(`/api/quiz/${resolvedParams.id}`);
+        const pin = searchParams.get("pin");
+        const url = `/api/quiz/${resolvedParams.id}${pin ? `?pin=${pin}` : ""}`;
+        const res = await fetch(url);
         if (!res.ok) throw new Error("Failed to load quiz");
         const data = await res.json();
         setQuiz(data.quiz);

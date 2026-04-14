@@ -81,3 +81,12 @@ export const multiplayerSessionsTable = pgTable("multiplayer_sessions", {
   playersCount: integer("players_count").default(0),
   leaderboard: jsonb("leaderboard"), // { [playerName: string]: number }
 });
+
+export const securityLogsTable = pgTable("security_logs", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  ipAddress: text("ip_address").notNull(),
+  action: text("action").notNull(), // 'pin_auth', 'upload_attempt'
+  targetId: text("target_id"), // Quiz ID or other identifier
+  isSuccess: boolean("is_success").default(false),
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow(),
+});

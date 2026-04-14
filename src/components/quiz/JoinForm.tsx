@@ -46,8 +46,8 @@ export function JoinForm({ prefilledPin = "" }: JoinFormProps) {
         return;
       }
 
-      // Redirigir a la sala de espera
-      router.push(`/quiz/${data.quizId}/live?guest=${encodeURIComponent(name)}`);
+      // Redirigir a la sala de espera con el PIN para autorización
+      router.push(`/quiz/${data.quizId}/live?guest=${encodeURIComponent(name)}&pin=${data.pin}`);
 
     } catch (err) {
       setError("Connection error");
@@ -73,7 +73,7 @@ export function JoinForm({ prefilledPin = "" }: JoinFormProps) {
             placeholder={joinT.pinPlaceholder}
             className="pl-14 h-16 text-center text-4xl font-mono tracking-[0.5em] focus:tracking-[0.5em] font-black rounded-2xl border-2 transition-all group-hover:border-primary/50"
             required
-            maxLength={5}
+            maxLength={6}
           />
           <KeyRound className="absolute left-5 top-1/2 -translate-y-1/2 text-muted-foreground h-6 w-6 group-focus-within:text-primary transition-colors" />
         </div>

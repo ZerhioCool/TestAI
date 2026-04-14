@@ -36,19 +36,29 @@ export async function POST(req: NextRequest) {
       
       const type = session.metadata?.type;
       const userId = session.metadata?.userId;
+      const amountPaid = session.amount_total || 0;
       
       if (!userId) {
         console.error("No userId found in webhook metadata");
         return NextResponse.json({ received: true });
       }
 
+      // SECURITY: Validar que el monto pagado coincida con el plan solicitado
       if (type === "pro") {
+        if (amountPaid < 499) {
+          console.error(`Intento de fraude: Pago insuficiente para Plan PRO (${amountPaid}) de usuario ${userId}`);
+          return NextResponse.json({ received: true });
+        }
         // Update user to PRO
         await db.update(usersTable)
           .set({ plan: "pro" })
           .where(eq(usersTable.id, userId));
         console.log("User updated to PRO:", userId);
       } else if (type === "pass") {
+        if (amountPaid < 99) {
+          console.error(`Intento de fraude: Pago insuficiente para Pase (${amountPaid}) de usuario ${userId}`);
+          return NextResponse.json({ received: true });
+        }
         // Unlock specific quiz with max length 10 and 10 days expiry
         const quizId = session.metadata?.quizId;
         if (quizId) {

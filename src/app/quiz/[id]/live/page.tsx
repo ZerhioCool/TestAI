@@ -37,7 +37,9 @@ export default function PlayerLivePage({ params }: { params: Promise<{ id: strin
 
   useEffect(() => {
     async function init() {
-      const qRes = await fetch(`/api/quiz/${resolvedParams.id}`);
+      const pin = searchParams.get("pin");
+      const url = `/api/quiz/${resolvedParams.id}${pin ? `?pin=${pin}` : ""}`;
+      const qRes = await fetch(url);
       const qData = await qRes.json();
       if (qData.quiz) setQuiz(qData.quiz);
       if (qData.questions) setQuestions(qData.questions);
